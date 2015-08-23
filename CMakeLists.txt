@@ -5,6 +5,8 @@ set(SOURCE_FILES
     src/base/message.cpp
     src/base/message.hpp
     src/base/types.hpp
+    src/util/binary_buffer.hpp
+    src/util/binary_buffer.cpp
 )
 
 find_package(Boost 1.59.0)
