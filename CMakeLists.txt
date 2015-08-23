@@ -1,14 +1,17 @@
 cmake_minimum_required(VERSION 3.3)
 project(aria)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+set(SOURCE_FILES
+    src/base/message.cpp
+    src/base/message.hpp
+    src/base/types.hpp
+)
 
 find_package(Boost 1.59.0)
-
 if(Boost_FOUND)
-    include_directories(${Boost_INCLUDE_DIRS})
-    set(SOURCE_FILES src/base/message.cpp src/base/message.h)
-    add_library(aria STATIC ${SOURCE_FILES} src/base/message.cpp src/base/message.h)
+    include_directories(src ${Boost_INCLUDE_DIRS})
+    add_library(aria STATIC ${SOURCE_FILES})
+    set_property(TARGET aria PROPERTY CXX_STANDARD 14)
 else()
     message(FATAL_ERROR "Failed to find Boost libraries. Unable to build.")
 endif()
