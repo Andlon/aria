@@ -11,7 +11,8 @@ namespace aria {
          * Aria's network protocol.
          *
          * Specifically, the class uses the following semantics:
-         * - All numeric types are encoded in big-endian byte order
+         * - All numeric types are encoded in big-endian byte order.
+         * - Raw binary data is prefixed by a 32-bit unsigned integer specifying its length.
          * - Strings must be UTF-8 encoded and are prefixed by a 32-bit unsigned integer specifying its length,
          *   followed by 1 byte per character.
          */
@@ -36,7 +37,8 @@ namespace aria {
          * Aria's network protocol.
          *
          * Specifically, the class uses the following semantics:
-         * - All numeric types are encoded in big-endian byte order
+         * - All numeric types are encoded in big-endian byte order.
+         * - Raw binary data is prefixed by a 32-bit unsigned integer specifying its length.
          * - Strings must be UTF-8 encoded and are prefixed by a 32-bit unsigned integer specifying its length,
          *   followed by 1 byte per character.
          */

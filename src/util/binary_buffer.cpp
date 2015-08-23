@@ -11,8 +11,8 @@ namespace aria {
         namespace {
             template <typename P>
             void append_bytes_to_vector(std::vector<byte> & vec, P primitive) {
-                byte * begin = (byte *) &primitive;
-                byte * end = begin + sizeof(primitive);
+                auto * begin = (byte *) &primitive;
+                auto * end = begin + sizeof(primitive);
                 std::copy(begin, end, std::back_inserter(vec));
             }
         }
@@ -51,6 +51,7 @@ void aria::internal::binary_buffer_writer::write_string(const std::string &str)
 
 void aria::internal::binary_buffer_writer::write_bytes(const std::vector<aria::byte> &bytes)
 {
+    write_uint32(bytes.size());
     std::copy(bytes.begin(), bytes.end(), std::back_inserter(_bytes));
 }
 
