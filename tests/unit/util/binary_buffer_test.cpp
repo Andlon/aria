@@ -88,8 +88,7 @@ TEST_F(binary_buffer_writer_test, write_empty_bytes) {
     writer.write_bytes({ });
 
     auto result = writer.take_buffer();
-    EXPECT_EQ(4, result.size());
-    EXPECT_EQ(bytevector({0, 0, 0, 0}), slice(result, 0, 4));
+    EXPECT_EQ(bytevector({0, 0, 0, 0}), result);
 }
 
 TEST_F(binary_buffer_writer_test, write_bytes) {
