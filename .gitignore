@@ -1,3 +1,6 @@
+# Qt Creator stuff
+*.*.user
+
 # Idea-specific stuff
 .idea/
 
