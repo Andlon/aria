@@ -32,17 +32,17 @@ namespace aria {
             message_type _type;
         };
 
-        class pause final : message {
+        class pause final : public message {
         public:
             pause();
         };
 
-        class stop final : message {
+        class stop final : public message {
         public:
             stop();
         };
 
-        class frame_data final : message {
+        class frame_data final : public message {
         public:
             frame_data(frame_id id, media_id media, std::vector<uint8_t> && data);
 
@@ -56,7 +56,7 @@ namespace aria {
             std::vector<uint8_t> _data;
         };
 
-        class frame_schedule final : message {
+        class frame_schedule final : public message {
         public:
             frame_schedule(frame_id id, timestamp scheduled_time);
 
@@ -68,7 +68,7 @@ namespace aria {
             timestamp _time;
         };
 
-        class media final : message {
+        class media final : public message {
         public:
             media(media_id id, const std::string & metadata);
 
