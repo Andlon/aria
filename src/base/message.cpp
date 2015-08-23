@@ -4,7 +4,7 @@
 
 #include "message.h"
 
-namespace onezero {
+namespace aria {
 
     message::message(message_type type)
     {

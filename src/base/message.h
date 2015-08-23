@@ -2,15 +2,15 @@
 // Created by andreas on 8/19/15.
 //
 
-#ifndef ONEZERO_MESSAGE_H
-#define ONEZERO_MESSAGE_H
+#ifndef ARIA_MESSAGE_H
+#define ARIA_MESSAGE_H
 
 #include <cstdint>
 #include <vector>
 #include <string>
 #include <ostream>
 
-namespace onezero {
+namespace aria {
 
     typedef uint64_t frame_id;
     typedef uint64_t media_id;
@@ -85,4 +85,4 @@ namespace onezero {
 }
 
 
-#endif //ONEZERO_MESSAGE_H
+#endif //ARIA_MESSAGE_H
