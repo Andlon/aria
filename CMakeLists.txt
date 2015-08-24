@@ -19,7 +19,7 @@ find_package(Boost 1.59.0)
 if(Boost_FOUND)
     include_directories(src ${Boost_INCLUDE_DIRS})
     add_library(aria STATIC ${SOURCE_FILES})
-    set_property(TARGET aria PROPERTY CXX_STANDARD 14)
+    set_property(TARGET aria PROPERTY CXX_STANDARD 11)
 
     # Tests
     add_subdirectory(tests/gtest)
@@ -28,7 +28,7 @@ if(Boost_FOUND)
     # Unit tests
     add_executable(unit_tests ${UNIT_TEST_FILES})
     target_link_libraries(unit_tests aria gtest gtest_main)
-    set_property(TARGET unit_tests PROPERTY CXX_STANDARD 14)
+    set_property(TARGET unit_tests PROPERTY CXX_STANDARD 11)
     add_custom_target(unit COMMAND unit_tests)
 
     # Run all tests using the 'check' target
