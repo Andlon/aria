@@ -1,10 +1,17 @@
 #include <base/types.hpp>
 #include <string>
 #include <vector>
+#include <stdexcept>
 
 namespace aria {
 
     namespace internal {
+
+        class buffer_error : public std::runtime_error {
+        public:
+            buffer_error(const char * what);
+            buffer_error(const std::string & what);
+        };
 
         /**
          * @brief Simplifies writing C++ data types to the binary format used by
@@ -44,9 +51,19 @@ namespace aria {
          */
         class binary_buffer_reader final {
         public:
+            binary_buffer_reader(const std::vector<byte> * byte);
+
+            uint8_t read_uint8();
+            uint16_t read_uint16();
+            uint32_t read_uint32();
+            uint64_t read_uint64();
+            std::string read_string();
+            std::vector<byte> read_bytes();
 
         private:
-
+            const byte * _buffer_start;
+            const size_t _buffer_size;
+            size_t _offset;
         };
 
     }

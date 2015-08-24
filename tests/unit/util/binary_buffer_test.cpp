@@ -4,6 +4,7 @@
 #include <cassert>
 
 using aria::byte;
+using aria::internal::binary_buffer_reader;
 
 typedef std::vector<byte> bytevector;
 
@@ -23,6 +24,10 @@ protected:
     }
 
     aria::internal::binary_buffer_writer writer;
+};
+
+class binary_buffer_reader_test : public ::testing::Test {
+
 };
 
 TEST_F(binary_buffer_writer_test, empty_upon_construction) {
@@ -98,4 +103,76 @@ TEST_F(binary_buffer_writer_test, write_bytes) {
     EXPECT_EQ(8, result.size());
     EXPECT_EQ(bytevector({0, 0, 0, 4}), slice(result, 0, 4));
     EXPECT_EQ(bytevector({1, 2, 0, 3}), slice(result, 4, 8));
+}
+
+TEST_F(binary_buffer_reader_test, read_uint8) {
+    auto input = bytevector{ 0, 1 };
+    auto reader = binary_buffer_reader(&input);
+
+    auto a = reader.read_uint8();
+    auto b = reader.read_uint8();
+    EXPECT_EQ(0, a);
+    EXPECT_EQ(1, b);
+}
+
+TEST_F(binary_buffer_reader_test, read_uint16) {
+    auto input = bytevector{ 0, 0, 0, 1 };
+    auto reader = binary_buffer_reader(&input);
+
+    auto a = reader.read_uint16();
+    auto b = reader.read_uint16();
+    EXPECT_EQ(0, a);
+    EXPECT_EQ(1, b);
+}
+
+TEST_F(binary_buffer_reader_test, read_uint32) {
+    auto input = bytevector{ 0, 0, 0, 0, 0, 0, 0, 1 };
+    auto reader = binary_buffer_reader(&input);
+
+    auto a = reader.read_uint32();
+    auto b = reader.read_uint32();
+    EXPECT_EQ(0, a);
+    EXPECT_EQ(1, b);
+}
+
+TEST_F(binary_buffer_reader_test, read_uint64) {
+    auto input = bytevector{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 };
+    auto reader = binary_buffer_reader(&input);
+
+    auto a = reader.read_uint64();
+    auto b = reader.read_uint64();
+    EXPECT_EQ(0, a);
+    EXPECT_EQ(1, b);
+}
+
+TEST_F(binary_buffer_reader_test, read_empty_string) {
+    auto input = bytevector{ 0, 0, 0, 0 };
+    auto reader = binary_buffer_reader(&input);
+
+    auto str = reader.read_string();
+    EXPECT_EQ("", str);
+}
+
+TEST_F(binary_buffer_reader_test, read_string) {
+    bytevector input = bytevector{ 0, 0, 0, 6, 's', 't', 'r', 'i', 'n', 'g' };
+    auto reader = binary_buffer_reader(&input);
+
+    auto str = reader.read_string();
+    EXPECT_EQ("string", str);
+}
+
+TEST_F(binary_buffer_reader_test, read_empty_bytes) {
+    auto input = bytevector{ 0, 0, 0, 0 };
+    auto reader = binary_buffer_reader(&input);
+
+    auto data = reader.read_bytes();
+    EXPECT_EQ(bytevector(), data);
+}
+
+TEST_F(binary_buffer_reader_test, read_bytes) {
+    bytevector input = bytevector{ 0, 0, 0, 4, 'd', 'a', 't', 'a' };
+    auto reader = binary_buffer_reader(&input);
+
+    auto data = reader.read_bytes();
+    EXPECT_EQ(bytevector({'d', 'a', 't', 'a'}), data);
 }

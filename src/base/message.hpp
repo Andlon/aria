@@ -16,9 +16,9 @@ namespace aria {
         enum class message_type {
             PAUSE,
             STOP,
-            MEDIA,
-            FRAMEDATA,
-            FRAMESCHEDULE,
+            MEDIA_DESCRIPTOR,
+            FRAME_DATA,
+            FRAME_SCHEDULE,
         };
 
         class message {
@@ -44,7 +44,7 @@ namespace aria {
 
         class frame_data final : public message {
         public:
-            frame_data(frame_id id, media_id media, std::vector<uint8_t> && data);
+            frame_data(frame_id id, media_id media, const std::vector<uint8_t> & data);
 
             frame_id id() const;
             media_id media() const;
@@ -68,9 +68,9 @@ namespace aria {
             timestamp _time;
         };
 
-        class media final : public message {
+        class media_descriptor final : public message {
         public:
-            media(media_id id, const std::string & metadata);
+            media_descriptor(media_id id, const std::string & metadata);
 
             media_id id() const;
             const std::string & metadata() const;

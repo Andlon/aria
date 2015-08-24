@@ -23,8 +23,8 @@ namespace aria {
 
         stop::stop() : message(message_type::STOP) { }
 
-        frame_data::frame_data(frame_id id, media_id media, std::vector<uint8_t> &&data)
-            : message(message_type::FRAMEDATA)
+        frame_data::frame_data(frame_id id, media_id media, const std::vector<uint8_t> & data)
+            : message(message_type::FRAME_DATA)
         {
             _id = id;
             _media = media;
@@ -48,7 +48,7 @@ namespace aria {
         }
 
         frame_schedule::frame_schedule(frame_id id, timestamp scheduled_time)
-            : message(message_type::FRAMESCHEDULE)
+            : message(message_type::FRAME_SCHEDULE)
         {
             _id = id;
             _time = scheduled_time;
@@ -64,19 +64,19 @@ namespace aria {
             return _time;
         }
 
-        media::media(media_id id, const std::string &metadata)
-            : message(message_type::MEDIA)
+        media_descriptor::media_descriptor(media_id id, const std::string &metadata)
+            : message(message_type::MEDIA_DESCRIPTOR)
         {
             _id = id;
             _metadata = metadata;
         }
 
-        media_id media::id() const
+        media_id media_descriptor::id() const
         {
             return _id;
         }
 
-        const std::string &media::metadata() const
+        const std::string &media_descriptor::metadata() const
         {
             return _metadata;
         }
