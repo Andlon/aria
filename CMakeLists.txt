@@ -12,6 +12,7 @@ set(SOURCE_FILES
 set(UNIT_TEST_FILES
     tests/unit/unit.cpp
     tests/unit/util/binary_buffer_test.cpp
+    tests/unit/base/message_test.cpp
 )
 
 find_package(Boost 1.59.0)
