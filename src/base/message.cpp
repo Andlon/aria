@@ -18,8 +18,8 @@ namespace aria {
                     { message_type::PAUSE, 0 },
                     { message_type::STOP, 1 },
                     { message_type::MEDIA_DESCRIPTOR, 2 },
-                    { message_type::FRAME_DATA, 3 },
-                    { message_type::FRAME_SCHEDULE, 4 }
+                    { message_type::FRAME, 3 },
+                    { message_type::SCHEDULE, 4 }
                 };
 
                 return header_map(entries.begin(), entries.end());
@@ -47,64 +47,59 @@ namespace aria {
             return _type;
         }
 
-        pause::pause() : message(message_type::PAUSE) { }
+        pause_message::pause_message() : message(message_type::PAUSE) { }
 
-        stop::stop() : message(message_type::STOP) { }
+        stop_message::stop_message() : message(message_type::STOP) { }
 
-        frame_data::frame_data(frame_id id, media_id media, const std::vector<uint8_t> & data)
-            : message(message_type::FRAME_DATA)
+        frame_message::frame_message(frame_id id, std::vector<byte> && data)
+            : message(message_type::FRAME), _id(id), _data(std::move(data))
         {
-            _id = id;
-            _media = media;
-            _data = data;
+
         }
 
-
-        frame_id frame_data::id() const
+        frame_id frame_message::id() const
         {
             return _id;
         }
 
-        media_id frame_data::media() const
-        {
-            return _media;
-        }
-
-        const std::vector<uint8_t> &frame_data::data() const
-        {
+        const std::vector<byte> & frame_message::data() const {
             return _data;
         }
 
-        frame_schedule::frame_schedule(frame_id id, timestamp scheduled_time)
-            : message(message_type::FRAME_SCHEDULE)
+        std::vector<byte> frame_message::take_data() {
+            return std::move(_data);
+        }
+
+        schedule_message::schedule_message(frame_id id, timestamp scheduled_time)
+            : message(message_type::SCHEDULE)
         {
             _id = id;
             _time = scheduled_time;
         }
 
-        frame_id frame_schedule::id() const
+        frame_id schedule_message::id() const
         {
             return _id;
         }
 
-        timestamp frame_schedule::scheduled_time() const
+        timestamp schedule_message::scheduled_time() const
         {
             return _time;
         }
 
-        media_descriptor::media_descriptor(media_id id, const std::string &metadata)
+        media_message::media_message(media_id id, const std::string &metadata)
             : message(message_type::MEDIA_DESCRIPTOR)
         {
             _id = id;
             _metadata = metadata;
         }
 
-        media_id media_descriptor::id() const
+        media_id media_message::id() const
         {
             return _id;
         }
 
-        const std::string &media_descriptor::metadata() const
+        const std::string &media_message::metadata() const
         {
             return _metadata;
         }
@@ -120,22 +115,21 @@ namespace aria {
             {
             case message_type::MEDIA_DESCRIPTOR:
             {
-                auto media = static_cast<const media_descriptor &>(message);
+                auto media = static_cast<const media_message &>(message);
                 writer.write_uint64(media.id());
                 writer.write_string(media.metadata());
                 break;
             }
-            case message_type::FRAME_DATA:
+            case message_type::FRAME:
             {
-                auto frame = static_cast<const frame_data &>(message);
+                const auto & frame = static_cast<const frame_message &>(message);
                 writer.write_uint64(frame.id());
-                writer.write_uint64(frame.media());
                 writer.write_bytes(frame.data());
                 break;
             }
-            case message_type::FRAME_SCHEDULE:
+            case message_type::SCHEDULE:
             {
-                auto schedule = static_cast<const frame_schedule &>(message);
+                auto schedule = static_cast<const schedule_message &>(message);
                 writer.write_uint64(schedule.id());
                 writer.write_uint64(schedule.scheduled_time());
                 break;
@@ -156,27 +150,26 @@ namespace aria {
 
             switch (type) {
             case message_type::PAUSE:
-                return std::make_shared<pause>();
+                return std::make_shared<pause_message>();
             case message_type::STOP:
-                return std::make_shared<stop>();
+                return std::make_shared<stop_message>();
             case message_type::MEDIA_DESCRIPTOR:
             {
                 auto id = reader.read_uint64();
                 auto metadata = reader.read_string();
-                return std::make_shared<media_descriptor>(id, metadata);
+                return std::make_shared<media_message>(id, metadata);
             }
-            case message_type::FRAME_DATA:
+            case message_type::FRAME:
             {
                 auto id = reader.read_uint64();
-                auto media = reader.read_uint64();
                 auto data = reader.read_bytes();
-                return std::make_shared<frame_data>(id, media, data);
+                return std::make_shared<frame_message>(id, std::move(data));
             }
-            case message_type::FRAME_SCHEDULE:
+            case message_type::SCHEDULE:
             {
                 auto id = reader.read_uint64();
                 auto scheduled_time = reader.read_uint64();
-                return std::make_shared<frame_schedule>(id, scheduled_time);
+                return std::make_shared<schedule_message>(id, scheduled_time);
             }
             }
         }

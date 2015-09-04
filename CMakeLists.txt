@@ -2,22 +2,33 @@ cmake_minimum_required(VERSION 3.3)
 project(aria)
 
 set(SOURCE_FILES
+    include/aria/types.hpp
+    include/aria/frame.hpp
+    src/base/frame_buffer.hpp
+    src/base/frame_buffer.cpp
+    src/base/frame.cpp
     src/base/message.cpp
     src/base/message.hpp
-    src/base/types.hpp
+    src/base/event.hpp
+    src/base/event_queue.hpp
+    src/base/event_queue.cpp
+    src/speaker/speaker_engine.hpp
+    src/speaker/speaker_engine.cpp
     src/util/binary_buffer.hpp
     src/util/binary_buffer.cpp
+    src/util/unique_ptr_tools.hpp
 )
 
 set(UNIT_TEST_FILES
     tests/unit/unit.cpp
     tests/unit/util/binary_buffer_test.cpp
     tests/unit/base/message_test.cpp
+    tests/unit/speaker/speaker_engine_test.cpp
 )
 
 find_package(Boost 1.59.0)
 if(Boost_FOUND)
-    include_directories(src ${Boost_INCLUDE_DIRS})
+    include_directories(include src ${Boost_INCLUDE_DIRS})
     add_library(aria STATIC ${SOURCE_FILES})
     set_property(TARGET aria PROPERTY CXX_STANDARD 11)
 
@@ -36,3 +47,4 @@ if(Boost_FOUND)
 else()
     message(FATAL_ERROR "Failed to find Boost libraries. Unable to build.")
 endif()
+

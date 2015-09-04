@@ -11,21 +11,21 @@ namespace aria {
     namespace internal {
 
         TEST(encode_message, encodes_pause) {
-            pause msg;
+            pause_message msg;
 
             auto result = encode_message(msg);
             EXPECT_EQ(bytevector({ 0 }), result);
         }
 
         TEST(encode_message, encodes_stop) {
-            stop msg;
+            stop_message msg;
 
             auto result = encode_message(msg);
             EXPECT_EQ(bytevector({ 1 }), result);
         }
 
         TEST(encode_message, encodes_media_descriptor) {
-            media_descriptor msg(1, "data");
+            media_message msg(1, "data");
 
             auto result = encode_message(msg);
             bytevector expected =
@@ -39,14 +39,13 @@ namespace aria {
         }
 
         TEST(encode_message, encodes_frame_data) {
-            frame_data msg(1, 1, { 'd', 'a', 't', 'a' });
+            frame_message msg(1, { 'd', 'a', 't', 'a' });
 
             auto result = encode_message(msg);
             bytevector expected =
             {
                 3,                        // header
                 0, 0, 0, 0, 0, 0, 0, 1,   // id
-                0, 0, 0, 0, 0, 0, 0, 1,   // media
                 0, 0, 0, 4,               // data size
                 'd', 'a', 't', 'a'        // data
             };
@@ -54,7 +53,7 @@ namespace aria {
         }
 
         TEST(encode_message, encodes_frame_schedule) {
-            frame_schedule msg(1, 2500);
+            schedule_message msg(1, 2500);
 
             auto result = encode_message(msg);
             bytevector expected =
@@ -92,7 +91,7 @@ namespace aria {
             auto result = decode_message(bytes);
             ASSERT_EQ(message_type::MEDIA_DESCRIPTOR, result->type());
 
-            auto msg = std::static_pointer_cast<media_descriptor>(result);
+            auto msg = std::static_pointer_cast<media_message>(result);
             EXPECT_EQ(1, msg->id());
             EXPECT_EQ("data", msg->metadata());
         }
@@ -102,17 +101,15 @@ namespace aria {
             {
                 3,                        // header
                 0, 0, 0, 0, 0, 0, 0, 1,   // id
-                0, 0, 0, 0, 0, 0, 0, 1,   // media
                 0, 0, 0, 4,               // data size
                 'd', 'a', 't', 'a'        // data
             };
 
             auto result = decode_message(bytes);
-            ASSERT_EQ(message_type::FRAME_DATA, result->type());
+            ASSERT_EQ(message_type::FRAME, result->type());
 
-            auto msg = std::static_pointer_cast<frame_data>(result);
+            auto msg = std::static_pointer_cast<frame_message>(result);
             EXPECT_EQ(1, msg->id());
-            EXPECT_EQ(1, msg->media());
             EXPECT_EQ(bytevector({ 'd', 'a', 't', 'a' }), msg->data());
         }
 
@@ -125,9 +122,9 @@ namespace aria {
             };
 
             auto result = decode_message(bytes);
-            ASSERT_EQ(message_type::FRAME_SCHEDULE, result->type());
+            ASSERT_EQ(message_type::SCHEDULE, result->type());
 
-            auto msg = std::static_pointer_cast<frame_schedule>(result);
+            auto msg = std::static_pointer_cast<schedule_message>(result);
             EXPECT_EQ(1, msg->id());
             EXPECT_EQ(2500, msg->scheduled_time());
         }

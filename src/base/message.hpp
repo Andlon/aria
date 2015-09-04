@@ -7,7 +7,8 @@
 #include <vector>
 #include <string>
 #include <memory>
-#include "types.hpp"
+#include <aria/types.hpp>
+#include <aria/frame.hpp>
 
 namespace aria {
 
@@ -17,8 +18,8 @@ namespace aria {
             PAUSE,
             STOP,
             MEDIA_DESCRIPTOR,
-            FRAME_DATA,
-            FRAME_SCHEDULE,
+            FRAME,
+            SCHEDULE
         };
 
         class message {
@@ -32,33 +33,33 @@ namespace aria {
             message_type _type;
         };
 
-        class pause final : public message {
+        class pause_message final : public message {
         public:
-            pause();
+            pause_message();
         };
 
-        class stop final : public message {
+        class stop_message final : public message {
         public:
-            stop();
+            stop_message();
         };
 
-        class frame_data final : public message {
+        class frame_message final : public message {
         public:
-            frame_data(frame_id id, media_id media, const std::vector<uint8_t> & data);
+            frame_message(frame_id id, std::vector<byte> && data);
 
             frame_id id() const;
-            media_id media() const;
-            const std::vector<uint8_t> & data() const;
+            const std::vector<byte> & data() const;
+
+            std::vector<byte> take_data();
 
         private:
             frame_id _id;
-            media_id _media;
-            std::vector<uint8_t> _data;
+            std::vector<byte> _data;
         };
 
-        class frame_schedule final : public message {
+        class schedule_message final : public message {
         public:
-            frame_schedule(frame_id id, timestamp scheduled_time);
+            schedule_message(frame_id id, timestamp scheduled_time);
 
             frame_id id() const;
             timestamp scheduled_time() const;
@@ -68,9 +69,9 @@ namespace aria {
             timestamp _time;
         };
 
-        class media_descriptor final : public message {
+        class media_message final : public message {
         public:
-            media_descriptor(media_id id, const std::string & metadata);
+            media_message(media_id id, const std::string & metadata);
 
             media_id id() const;
             const std::string & metadata() const;
