@@ -3,6 +3,10 @@ project(aria)
 
 set(LIB_SOURCE_FILES
     include/aria/types.hpp
+    include/aria/speaker.hpp
+    include/aria/player.hpp
+    src/speaker.cpp
+    src/player.cpp
     src/util/binary_buffer.hpp
     src/util/binary_buffer.cpp
     src/util/unique_ptr_tools.hpp
