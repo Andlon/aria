@@ -7,9 +7,12 @@ set(LIB_SOURCE_FILES
     include/aria/player.hpp
     src/speaker.cpp
     src/player.cpp
+    src/speaker_connection.hpp
+    src/speaker_connection.cpp
     src/util/binary_buffer.hpp
     src/util/binary_buffer.cpp
     src/util/unique_ptr_tools.hpp
+    src/util/callable_queue.hpp
 )
 
 set(UNIT_TEST_FILES
