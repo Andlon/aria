@@ -1,19 +1,8 @@
 cmake_minimum_required(VERSION 3.3)
 project(aria)
 
-set(SOURCE_FILES
+set(LIB_SOURCE_FILES
     include/aria/types.hpp
-    include/aria/frame.hpp
-    src/base/frame_buffer.hpp
-    src/base/frame_buffer.cpp
-    src/base/frame.cpp
-    src/base/message.cpp
-    src/base/message.hpp
-    src/base/event.hpp
-    src/base/event_queue.hpp
-    src/base/event_queue.cpp
-    src/speaker/speaker_engine.hpp
-    src/speaker/speaker_engine.cpp
     src/util/binary_buffer.hpp
     src/util/binary_buffer.cpp
     src/util/unique_ptr_tools.hpp
@@ -22,14 +11,16 @@ set(SOURCE_FILES
 set(UNIT_TEST_FILES
     tests/unit/unit.cpp
     tests/unit/util/binary_buffer_test.cpp
-    tests/unit/base/message_test.cpp
-    tests/unit/speaker/speaker_engine_test.cpp
 )
 
 find_package(Boost 1.59.0)
 if(Boost_FOUND)
     include_directories(include src ${Boost_INCLUDE_DIRS})
-    add_library(aria STATIC ${SOURCE_FILES})
+    add_library(aria STATIC ${LIB_SOURCE_FILES})
+    add_executable(aria_speaker src/speaker_main.cpp)
+    add_executable(aria_source src/source_main.cpp)
+    target_link_libraries(aria_speaker aria)
+    target_link_libraries(aria_source aria)
     set_property(TARGET aria PROPERTY CXX_STANDARD 11)
 
     # Tests
