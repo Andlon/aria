@@ -17,12 +17,16 @@ set(UNIT_TEST_FILES
     tests/unit/util/binary_buffer_test.cpp
 )
 
+find_package (Threads)
 find_package(Boost 1.59.0 REQUIRED COMPONENTS system)
+
 if(Boost_FOUND)
     include_directories(include src ${Boost_INCLUDE_DIRS})
     add_library(aria STATIC ${LIB_SOURCE_FILES})
     add_executable(aria_speaker src/speaker_main.cpp)
     add_executable(aria_source src/source_main.cpp)
+    target_link_libraries (aria_speaker ${CMAKE_THREAD_LIBS_INIT})
+    target_link_libraries (aria_source ${CMAKE_THREAD_LIBS_INIT})
     target_link_libraries(aria_speaker aria ${Boost_LIBRARIES})
     target_link_libraries(aria_source aria ${Boost_LIBRARIES})
     set_property(TARGET aria PROPERTY CXX_STANDARD 11)

@@ -1,5 +1,6 @@
 #include <aria/speaker.hpp>
 #include <boost/asio.hpp>
+#include <array>
 
 namespace asio = boost::asio;
 

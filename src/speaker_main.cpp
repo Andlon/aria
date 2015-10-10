@@ -1,5 +1,3 @@
-#include <boost/asio.hpp>
-#include <array>
 #include <iostream>
 #include <aria/speaker.hpp>
 #include <memory>
