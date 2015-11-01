@@ -13,30 +13,21 @@ using boost::system::error_code;
 namespace aria {
 
     speaker::speaker(speaker_callbacks & callbacks)
-        :   _callbacks(callbacks), _acceptor(_io_service, tcp::endpoint(tcp::v4(), 1582))
+        :   _callbacks(callbacks), _acceptor(io_service(), tcp::endpoint(tcp::v4(), 1582))
     {
 
     }
 
-    void speaker::start()
+    void speaker::before_io_service()
     {
-        _io_thread = std::thread([this] () {
-            accept();
-            _io_service.run();
-            std::cerr << "IO Service aborted." << std::endl;
-        });
-    }
-
-    void speaker::process()
-    {
-        _sync_queue.run_all();
+        accept();
     }
 
     void speaker::accept()
     {
         if (!_connection)
         {
-            auto socket = std::make_shared<tcp::socket>(_io_service);
+            auto socket = std::make_shared<tcp::socket>(io_service());
             _acceptor.async_accept(*socket,
                                    [=] (const error_code& error) {
                 if (!error)
@@ -69,10 +60,4 @@ namespace aria {
             });
         }
     }
-
-    void speaker::run_on_main_thread(std::function<void ()> &&function)
-    {
-        _sync_queue.post(std::move(function));
-    }
-
 }

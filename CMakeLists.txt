@@ -5,10 +5,12 @@ set(LIB_SOURCE_FILES
     include/aria/types.hpp
     include/aria/speaker.hpp
     include/aria/player.hpp
+    include/aria/io_thread.hpp
     src/speaker.cpp
     src/player.cpp
     src/speaker_connection.hpp
     src/speaker_connection.cpp
+    src/io_thread.cpp
     src/util/binary_buffer.hpp
     src/util/binary_buffer.cpp
     src/util/unique_ptr_tools.hpp
