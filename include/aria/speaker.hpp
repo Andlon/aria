@@ -23,7 +23,7 @@ namespace aria {
         speaker(speaker_callbacks & callbacks);
 
     protected:
-        void before_io_service();
+        void before_io_service() override;
 
     private:
         void accept();
