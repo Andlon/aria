@@ -3,16 +3,42 @@
 
 namespace aria {
 
+    io_thread::io_thread()
+        :   _should_run(false)
+    {
+
+    }
+
+    io_thread::~io_thread()
+    {
+        stop();
+    }
+
     void io_thread::start()
     {
-        if (!_io_thread.joinable())
+        if (!_should_run)
         {
-            _io_thread = std::thread([this] () {
+            _should_run = true;
+            _io_thread = std::thread([this] ()
+            {
                 before_io_service();
-                _io_service.run();
+                do {
+                    _io_service.run();
+                    _io_service.reset();
+                    std::this_thread::sleep_for(std::chrono::milliseconds(1));
+                } while (_should_run);
+
                 std::cerr << "IO Service aborted." << std::endl;
             });
         }
+
+    }
+
+    void io_thread::stop()
+    {
+        _should_run = false;
+        _io_service.stop();
+        _io_thread.join();
     }
 
     void io_thread::sync()

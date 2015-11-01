@@ -4,6 +4,8 @@
 #include <cstdint>
 #include <memory>
 #include <boost/asio.hpp>
+#include <aria/io_thread.hpp>
+#include <vector>
 
 namespace aria {
 
@@ -20,19 +22,23 @@ namespace aria {
         virtual void disconnected() {}
     };
 
-    class player
+    class player : public io_thread
     {
     public:
         player(std::shared_ptr<player_callbacks> callbacks);
 
         void connect_speaker(const std::string &host, uint16_t port);
-        void feed_audio(const char * data, size_t length);
+        void feed_audio(std::vector<char> && data);
+
+    protected:
+        virtual void before_io_service() override;
 
     private:
+        typedef std::shared_ptr<boost::asio::ip::tcp::socket> socket_ptr;
         std::shared_ptr<player_callbacks> _callbacks;
 
-        boost::asio::io_service _io_service;
-        boost::asio::ip::tcp::socket _socket;
+        boost::asio::ip::tcp::resolver _resolver;
+        std::vector<socket_ptr> _sockets;
     };
 
 }
